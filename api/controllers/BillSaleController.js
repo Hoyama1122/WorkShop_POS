@@ -16,6 +16,7 @@ dayjs.tz.setDefault("Asia/Bangkok");
 const BillSaleModel = require("../models/BillsaleModel");
 const BillSaleDetailModel = require("../models/BillSaleDetailModel");
 const { now } = require("sequelize/lib/utils");
+const sequelize = require("../connect");
 
 //  !check login status
 app.get("/billSale/openBill", service.isLogin, async (req, res) => {
@@ -274,21 +275,55 @@ app.get(
   service.isLogin,
   async (req, res) => {
     try {
+      const BillSaleModel = require("../models/BillsaleModel");
+      const BillSaleDetailModel = require("../models/BillSaleDetailModel");
+      const ProductModel = require("../models/ProductModel");
+
+      BillSaleModel.hasMany(BillSaleDetailModel);
+      BillSaleDetailModel.belongsTo(ProductModel);
+
       let arr = [];
       let y = req.params.year;
       let m = req.params.month;
       let dayInMonth = new Date(y, m, 0).getDate();
 
+      const { Sequelize } = require("sequelize");
+      const Op = Sequelize.Op;
+
       for (let i = 1; i <= dayInMonth; i++) {
-        const result = await BillSaleModel.findAll({
+        const results = await BillSaleModel.findAll({
           where: {
-                
+            [Op.and]: [
+              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('YEAR FROM "billsaledetails"."createdAt"')), y),
+              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('MONTH FROM "billsaledetails"."createdAt"')), m),
+              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('DAY FROM "billsaledetails"."createdAt"')), i),
+            ],
+          },
+          include: {
+            model: BillSaleDetailModel,
+            attributes: ["qty", "price"],
+            include: {
+              model: ProductModel,
+              attributes: ["barcode", "name"],
+            },
           },
         });
+
+        let sum = 0;
+
+        for (let j = 0; j < results.length; j++) {
+          const bill = results[j];
+          for (let k = 0; k < bill.billsaledetails.length; k++) {
+            const item = bill.billsaledetails[k];
+            sum += parseInt(item.qty) * parseInt(item.price);
+          }
+        }
+
         arr.push({
-          day: i ,
-          result:result
-        })
+          day: i,
+          result: results,
+          sum: sum,
+        });
       }
       res.send({ message: "success", result: arr });
     } catch (e) {
@@ -296,4 +331,7 @@ app.get(
     }
   }
 );
+
+
+
 module.exports = app;
