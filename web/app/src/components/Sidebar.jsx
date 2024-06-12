@@ -18,7 +18,7 @@ export default function Sidebar() {
           if (res.data.message === "success") {
             setMemberName(res.data.result.name);
             setpackageName(res.data.result.package.name);
-          } 
+          }
         })
         .catch((err) => {
           throw err.response.data;
@@ -42,7 +42,9 @@ export default function Sidebar() {
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           />
-          <span className="brand-text font-weight-light">POS ขายเห้ไรดีหว่ะ</span>
+          <span className="brand-text font-weight-light">
+            POS ขายเห้ไรดีหว่ะ
+          </span>
         </Link>
         {/* Sidebar */}
         <div className="sidebar">
@@ -100,14 +102,32 @@ export default function Sidebar() {
               </li>
               <li className="nav-item">
                 <Link to="/user" className="nav-link">
-                  <i class="nav-icon fa-solid fa-user "/>
+                  <i class="nav-icon fa-solid fa-user " />
                   <p>ผู้ใช้งาน</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/sale" className="nav-link">
-                <i class="nav-icon fa-solid fa-dollar-sign"></i>
+                  <i class="nav-icon fa-solid fa-dollar-sign"></i>
                   <p>ขายสินค้า</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/sumSalePerday" className="nav-link">
+                  <i className="nav-icon fa-solid fa-chart-line"></i>
+                  <p>สรุปรายงานยอดขาย</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/billSale" className="nav-link">
+                  <i className="nav-icon fa-solid fa-file-invoice-dollar"></i>
+                  <p>รายงานบิลขาย</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/stock" className="nav-link">
+                  <i className="nav-icon fa-solid fa-boxes-stacked"></i>
+                  <p>รับสินค้าเข้า Stock</p>
                 </Link>
               </li>
             </ul>

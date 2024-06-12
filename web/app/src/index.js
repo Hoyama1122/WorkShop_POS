@@ -1,13 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import reportWebVitals from "./reportWebVitals";
-import Package from "./page/Package";
+import reportWebVitals from "./reportWebVitals";  // Ensure this path is correct
+import Package from "./page/Package";  // Ensure this path is correct
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./page/Login";
-import Home from "./page/Home";
-import Product from "./page/Product";
-import User from "./page/User";
-import Sale from "./page/Sale";
+import Login from "./page/Login";  // Ensure this path is correct
+import Home from "./page/Home";  // Ensure this path is correct
+import Product from "./page/Product";  // Ensure this path is correct
+import User from "./page/User";  // Ensure this path is correct
+import Sale from "./page/Sale";  // Ensure this path is correct
+import BillSale from "./page/BillSale";  // Ensure this path is correct
+import BillPerDay from "./page/BillPerDay";  // Ensure this path is correct
 
 const router = createBrowserRouter([
   {
@@ -34,7 +36,17 @@ const router = createBrowserRouter([
     path: "/sale",
     element: <Sale />,
   },
+  {
+    path: "/billSale",
+    element: <BillSale />,
+  },
+  {
+    path:'/sumSalePerday',
+    element:<BillPerDay/>
+  }
+ 
 ]);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<RouterProvider router={router} />);
 

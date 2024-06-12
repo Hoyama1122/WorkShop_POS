@@ -3,10 +3,8 @@
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  /* Add transition for smooth scaling */
+
 }
-
-
 .card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -31,3 +29,111 @@
   font-size: 1.1rem;
   color: #131212;
 }
+.card-hover {
+  transition: transform 0.2s;
+}
+
+.card-hover:hover {
+  transform: scale(1.05);
+}
+
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1.1em;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-info:hover {
+  background-color: #117a8b;
+  border-color: #0d5c72;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #bd2130;
+  border-color: #b21f2d;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.text-end {
+  font-size: 17px;
+ 
+}
+.list-group-item {
+  border: none;
+  margin-bottom: 10px;
+}
+
+.list-group-item .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.card-hover:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.text-end {
+  text-align: right;
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-info, .btn-secondary {
+  margin: 0.5rem 0;
+}
+
+.modal-lg {
+  max-width: 80%;
+}
+
+.table thead {
+  background-color: #f8f9fa;
+}
+
+.table thead th {
+  border-top: none;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-bordered th, .table-bordered td {
+  border: 1px solid #dee2e6;
+}
+

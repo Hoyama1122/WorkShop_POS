@@ -14,6 +14,7 @@ app.post("/product/insert", service.isLogin, async (req, res) => {
     payload.userId = service.getMemberId(req);
 
     const result = await ProductModel.create(payload);
+
     res.send({ result: result, message: "success" });
   } catch (e) {
     return res.status(500).send({ message: e.message });
@@ -24,7 +25,7 @@ app.post("/product/insert", service.isLogin, async (req, res) => {
 app.post("/product/update", service.isLogin, async (req, res) => {
   try {
     let payload = req.body;
-    payload.userId= service.getMemberId(req)
+    payload.userId = service.getMemberId(req);
     await ProductModel.update(payload, {
       where: {
         id: req.body.id,
@@ -40,6 +41,9 @@ app.post("/product/update", service.isLogin, async (req, res) => {
 app.get("/product/list", service.isLogin, async (req, res) => {
   try {
     const result = await ProductModel.findAll({
+      where: {
+        userId: service.getMemberId(req),
+      },
       order: [["id", "DESC"]],
     });
     res.send({ result: result, message: "success" });
@@ -68,7 +72,12 @@ app.get("/product/listForSale", service.isLogin, async (req, res) => {
   ProductModel.hasMany(ProductImageModel);
 
   try {
+    const userId = service.getMemberId(req); // Get userId from the service
+
     const result = await ProductModel.findAll({
+      where: {
+        userId: userId,
+      },
       order: [["id", "desc"]],
       include: {
         model: ProductImageModel,
@@ -77,9 +86,11 @@ app.get("/product/listForSale", service.isLogin, async (req, res) => {
         },
       },
     });
+
     res.send({ message: "success", result: result });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });
+
 module.exports = app;
