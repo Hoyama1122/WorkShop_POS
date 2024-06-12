@@ -105,7 +105,7 @@ export default function BillPerDay() {
                   className="btn btn-primary mt-0"
                 >
                   <i class="fa fa-search me-2" aria-hidden="true"></i>
-                  Search
+                  ค้นหา
                 </button>
               </div>
             </div>
