@@ -3,9 +3,11 @@ import Template from "../components/Template";
 import swal from "sweetalert2";
 import axios from "axios";
 import config from "../config";
+import Modal from "../components/Modal";
+import * as dayjs from "dayjs";
 
 export default function BillPerDay() {
-  const [currentYear, setcurrentYear] = useState(() => {
+  const [currentYear, setCurrentYear] = useState(() => {
     let myDate = new Date();
     return myDate.getFullYear();
   });
@@ -13,8 +15,8 @@ export default function BillPerDay() {
   useEffect(() => {
     handleshowReport();
   }, []);
-  
-  const [arrYear, setarrYear] = useState(() => {
+
+  const [arrYear, setArrYear] = useState(() => {
     let arr = [];
     let myDate = new Date();
     let currentYear = myDate.getFullYear();
@@ -25,12 +27,12 @@ export default function BillPerDay() {
     return arr;
   });
 
-  const [currentMonth, setcurrentMonth] = useState(() => {
+  const [currentMonth, setCurrentMonth] = useState(() => {
     let myDate = new Date();
     return myDate.getMonth() + 1;
   });
 
-  const [arrMonth, setarrMonth] = useState(() => {
+  const [arrMonth] = useState(() => {
     return [
       { value: 1, label: "มกราคม" },
       { value: 2, label: "กุมภาพันธ์" },
@@ -47,7 +49,9 @@ export default function BillPerDay() {
     ];
   });
 
-  const [billSales, setbillSales] = useState([]);
+  const [billSales, setBillSales] = useState([]);
+
+  const [currentBill, setCurrentBill] = useState({});
 
   const handleshowReport = async () => {
     try {
@@ -57,7 +61,7 @@ export default function BillPerDay() {
       );
 
       if (res.data && res.data.message === "success" && res.data.result) {
-        setbillSales(res.data.result);
+        setBillSales(res.data.result);
       } else {
         throw new Error("Invalid response from API");
       }
@@ -73,6 +77,7 @@ export default function BillPerDay() {
       icon: "error",
     });
   };
+
   return (
     <>
       <Template>
@@ -81,17 +86,19 @@ export default function BillPerDay() {
             <div className="h4 mb-0">รายงานการขายรายวัน</div>
           </div>
           <div className="card-body">
-            <div className="row ">
+            <div className="row">
               <div className="col-3">
                 <div className="input-group">
                   <span className="input-group-text">ปี</span>
                   <select
                     value={currentYear}
-                    onChange={(e) => setcurrentYear(e.target.value)}
+                    onChange={(e) => setCurrentYear(Number(e.target.value))}
                     className="form-control"
                   >
                     {arrYear.map((item) => (
-                      <option value={item}>{item}</option>
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -100,12 +107,14 @@ export default function BillPerDay() {
                 <div className="input-group">
                   <span className="input-group-text">เดือน</span>
                   <select
-                    onChange={(e) => setcurrentMonth(e.target.value)}
+                    onChange={(e) => setCurrentMonth(Number(e.target.value))}
                     value={currentMonth}
                     className="form-control"
                   >
                     {arrMonth.map((item) => (
-                      <option value={item.value}>{item.label}</option>
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -115,8 +124,8 @@ export default function BillPerDay() {
                   onClick={handleshowReport}
                   className="btn btn-primary mt-0"
                 >
-                  <i class="fa fa-search me-2" aria-hidden="true"></i>
-                  ค้นหา
+                  <i className="fa fa-search me-2" aria-hidden="true"></i>
+                  Search
                 </button>
               </div>
             </div>
@@ -129,24 +138,71 @@ export default function BillPerDay() {
                 </tr>
               </thead>
               <tbody className="text-center">
-                {billSales.length > 0 &&
+                {billSales.length > 0 ? (
                   billSales.map((item) => (
                     <tr key={item.id}>
                       <td>{item.day}</td>
                       <td>{item.sum.toLocaleString("th-TH")}</td>
                       <td>
-                        <button className="btn btn-primary">
-                          <i class="fa fa-search me-2" aria-hidden="true"></i>
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalBillSale"
+                          onClick={() => {
+                            setCurrentBill(item.result);
+                            console.log(item.result);
+                          }}
+                          className="btn btn-primary"
+                        >
+                          <i
+                            className="fa fa-search me-2"
+                            aria-hidden="true"
+                          ></i>
                           ค้นหา
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">ไม่พบข้อมูล</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </Template>
+
+      <Modal id="modalBillSale" title="บิลขาย" modalSize="modal-lg">
+        <table className="table table-bordered table-striped table-hover mt-3">
+          <thead className="table-white text-center">
+            <tr>
+              <th>เลขบิล</th>
+              <th>วันที่</th>
+              <th width="250px"></th>
+            </tr>
+          </thead>
+          <tbody className="text-center">
+            {currentBill && currentBill.length > 0 ? (
+              currentBill.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.id}</td>
+                  {dayjs(item.createdAt).format("DD/MM/YYYY HH:mm")}
+                  <td>
+                    <button className="btn btn-primary">
+                      <i className="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">ไม่พบข้อมูล</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </Modal>
     </>
   );
 }
