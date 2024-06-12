@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Template from "../components/Template";
 import swal from "sweetalert2";
 import axios from "axios";
@@ -10,12 +10,16 @@ export default function BillPerDay() {
     return myDate.getFullYear();
   });
 
+  useEffect(() => {
+    handleshowReport();
+  }, []);
+  
   const [arrYear, setarrYear] = useState(() => {
     let arr = [];
     let myDate = new Date();
     let currentYear = myDate.getFullYear();
-    let before = currentYear - 5;
-    for (let i = before; i <= currentYear; i++) {
+    let beforeYear = currentYear - 5;
+    for (let i = beforeYear; i <= currentYear; i++) {
       arr.push(i);
     }
     return arr;
@@ -43,18 +47,25 @@ export default function BillPerDay() {
     ];
   });
 
+  const [billSales, setbillSales] = useState([]);
+
   const handleshowReport = async () => {
     try {
       const res = await axios.get(
         `${config.api_path}/billSale/listByYearAndMonth/${currentYear}/${currentMonth}`,
         config.headers()
       );
-      console.log(res.data);
+
+      if (res.data && res.data.message === "success" && res.data.result) {
+        setbillSales(res.data.result);
+      } else {
+        throw new Error("Invalid response from API");
+      }
     } catch (e) {
       showErrorAlert(e.message);
     }
   };
-  
+
   const showErrorAlert = (message) => {
     swal.fire({
       title: "Error",
@@ -109,6 +120,30 @@ export default function BillPerDay() {
                 </button>
               </div>
             </div>
+            <table className="table table-bordered table-striped table-hover mt-3">
+              <thead className="table-white text-center">
+                <tr>
+                  <th>วันที่</th>
+                  <th>ยอดขาย</th>
+                  <th width="250px"></th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {billSales.length > 0 &&
+                  billSales.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.day}</td>
+                      <td>{item.sum.toLocaleString("th-TH")}</td>
+                      <td>
+                        <button className="btn btn-primary">
+                          <i class="fa fa-search me-2" aria-hidden="true"></i>
+                          ค้นหา
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </Template>
