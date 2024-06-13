@@ -53,6 +53,8 @@ export default function BillPerDay() {
 
   const [currentBill, setCurrentBill] = useState({});
 
+  const [currentBillSaleDetail, setcurrentBillSaleDetail] = useState([]);
+
   const handleshowReport = async () => {
     try {
       const res = await axios.get(
@@ -149,7 +151,6 @@ export default function BillPerDay() {
                           data-bs-target="#modalBillSale"
                           onClick={() => {
                             setCurrentBill(item.result);
-                            console.log(item.result);
                           }}
                           className="btn btn-primary"
                         >
@@ -189,7 +190,14 @@ export default function BillPerDay() {
                   <td>{item.id}</td>
                   {dayjs(item.createdAt).format("DD/MM/YYYY HH:mm")}
                   <td>
-                    <button className="btn btn-primary">
+                    <button
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalBillSaleDetail"
+                      onClick={() => {
+                        setcurrentBillSaleDetail(item.billsaledetails);
+                      }}
+                      className="btn btn-primary"
+                    >
                       <i className="fa fa-search" aria-hidden="true"></i>
                     </button>
                   </td>
@@ -202,6 +210,59 @@ export default function BillPerDay() {
             )}
           </tbody>
         </table>
+      </Modal>
+
+      <Modal
+        id="modalBillSaleDetail"
+        title="รายละเอียดบิล"
+        modalSize="modal-lg"
+      >
+        <table className="table table-bordered table-striped table-hover mt-3">
+          <thead className="table-white text-center">
+            <tr>
+              <th>ราคา</th>
+              <th>จำนวน</th>
+              <th>ยอดรวม</th>
+            </tr>
+          </thead>
+          <tbody className="text-center">
+            {currentBillSaleDetail && currentBillSaleDetail.length > 0 ? (
+              currentBillSaleDetail.map((item, index) => (
+                <tr key={index}>
+                  <td>{Number(item.price).toLocaleString("th-TH")}</td>
+                  <td>{item.qty}</td>
+                  <td>{(item.qty * item.price).toLocaleString("th-TH")}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">ไม่พบข้อมูล</td>
+              </tr>
+            )}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="2" className="text-center fw-bold">
+                ยอดเงินทั้งหมด
+              </td>
+              <td className="text-center fw-bold">
+                {currentBillSaleDetail
+                  .reduce((sum, item) => sum + item.qty * item.price, 0)
+                  .toLocaleString("th-TH")}
+                &nbsp;฿
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <div className="text-end">
+          <button
+            className="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalBillSale"
+          >
+            <i className="fa fa-arrow-left me-2" aria-hidden="true"></i>ย้อนกลับ
+          </button>
+        </div>
       </Modal>
     </>
   );

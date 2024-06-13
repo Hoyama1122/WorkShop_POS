@@ -579,9 +579,9 @@ export default function Sale() {
         </table>
         <div className="text-end">
           <button
-            data-bs-toggle="modal"
-            data-bs-target="#ModalBillToday"
             className="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalBillToday"
           >
             <i class="fa fa-arrow-circle-left me-2" aria-hidden="true"></i>
             กลับหน้าบิลวันนี้
