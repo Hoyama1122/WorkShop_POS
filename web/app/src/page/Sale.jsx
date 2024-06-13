@@ -581,7 +581,7 @@ export default function Sale() {
           <button
             className="btn btn-primary"
             data-bs-toggle="modal"
-            data-bs-target="#modalBillToday"
+            data-bs-target="#ModalBillToday"
           >
             <i class="fa fa-arrow-circle-left me-2" aria-hidden="true"></i>
             กลับหน้าบิลวันนี้
