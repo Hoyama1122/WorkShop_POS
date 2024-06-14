@@ -248,7 +248,7 @@ app.get("/billSale/list", service.isLogin, async (req, res) => {
   try {
     const BillSaleDetailModel = require("../models/BillSaleDetailModel");
     const ProductModel = require("../models/ProductModel");
-
+    const userId = service.getMemberId(req);
     BillSaleModel.hasMany(BillSaleDetailModel);
     BillSaleDetailModel.belongsTo(ProductModel);
 
@@ -256,6 +256,7 @@ app.get("/billSale/list", service.isLogin, async (req, res) => {
       order: [["id", "desc"]],
       where: {
         status: "pay",
+        userId: userId,
       },
       include: {
         model: BillSaleDetailModel,
@@ -278,7 +279,7 @@ app.get(
       const BillSaleModel = require("../models/BillsaleModel");
       const BillSaleDetailModel = require("../models/BillSaleDetailModel");
       const ProductModel = require("../models/ProductModel");
-
+      const userId = service.getMemberId(req);
       BillSaleModel.hasMany(BillSaleDetailModel);
       BillSaleDetailModel.belongsTo(ProductModel);
 
@@ -294,10 +295,29 @@ app.get(
         const results = await BillSaleModel.findAll({
           where: {
             [Op.and]: [
-              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('YEAR FROM "billsaledetails"."createdAt"')), y),
-              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('MONTH FROM "billsaledetails"."createdAt"')), m),
-              Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('DAY FROM "billsaledetails"."createdAt"')), i),
+              Sequelize.where(
+                Sequelize.fn(
+                  "EXTRACT",
+                  Sequelize.literal('YEAR FROM "billsaledetails"."createdAt"')
+                ),
+                y
+              ),
+              Sequelize.where(
+                Sequelize.fn(
+                  "EXTRACT",
+                  Sequelize.literal('MONTH FROM "billsaledetails"."createdAt"')
+                ),
+                m
+              ),
+              Sequelize.where(
+                Sequelize.fn(
+                  "EXTRACT",
+                  Sequelize.literal('DAY FROM "billsaledetails"."createdAt"')
+                ),
+                i
+              ),
             ],
+            userId: userId,
           },
           include: {
             model: BillSaleDetailModel,
@@ -331,7 +351,5 @@ app.get(
     }
   }
 );
-
-
 
 module.exports = app;

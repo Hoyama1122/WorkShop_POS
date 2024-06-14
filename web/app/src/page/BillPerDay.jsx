@@ -15,7 +15,7 @@ export default function BillPerDay() {
   useEffect(() => {
     handleshowReport();
   }, []);
-
+  
   const [arrYear, setArrYear] = useState(() => {
     let arr = [];
     let myDate = new Date();
@@ -264,6 +264,7 @@ export default function BillPerDay() {
           </button>
         </div>
       </Modal>
+      
     </>
   );
 }
