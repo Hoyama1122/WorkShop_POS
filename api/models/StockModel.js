@@ -16,5 +16,7 @@ const StockModel = conn.define("stock", {
     type: DataTypes.BIGINT,
   },
 });
+
 StockModel.sync({alter:true})
+
 module.exports = StockModel;
