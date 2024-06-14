@@ -1,6 +1,6 @@
 module.exports = {
   getToken: (req) => {
-    return req.headers.authorization.replace("Bearer ", "");
+    return req.headers.authorization.split(" ")[1]
   },
   isLogin: (req, res, next) => {
     require("dotenv").config();
