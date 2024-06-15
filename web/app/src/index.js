@@ -10,6 +10,7 @@ import User from "./page/User";  // Ensure this path is correct
 import Sale from "./page/Sale";  // Ensure this path is correct
 import BillSale from "./page/BillSale";  // Ensure this path is correct
 import BillPerDay from "./page/BillPerDay";  // Ensure this path is correct
+import Stock from "./page/Stock";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path:'/sumSalePerday',
     element:<BillPerDay/>
+  },
+  {
+    path:"/stock",
+    element:<Stock />
   }
  
 ]);

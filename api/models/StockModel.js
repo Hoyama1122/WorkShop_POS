@@ -18,5 +18,5 @@ const StockModel = conn.define("stock", {
 });
 
 StockModel.sync({alter:true})
-
+  
 module.exports = StockModel;
