@@ -7,7 +7,7 @@ module.exports = {
     const jwt = require("jsonwebtoken");
 
     if (req.headers.authorization != null) {
-      const token = req.headers.authorization.replace("Bearer ", "");
+      const token = req.headers.authorization.split(" ")[1]
       const secret = process.env.secret;
       try {
         const verify = jwt.verify(token, secret);
@@ -21,7 +21,7 @@ module.exports = {
   },
   getMemberId: (req) => {
     const jwt = require("jsonwebtoken");
-    const token = req.headers.authorization.replace("Bearer ", "");
+    const token = req.headers.authorization.split(" ")[1]
     const payload = jwt.decode(token);
     return payload.id;
   },
