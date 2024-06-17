@@ -3,34 +3,31 @@ import swal from "sweetalert2";
 import axios from "axios";
 import config from "../config";
 import { Link } from "react-router-dom";
+
 export default function Sidebar() {
   const [memberName, setMemberName] = useState();
-  const [packageName, setpackageName] = useState();
+  const [packageName, setPackageName] = useState();
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      axios
-        .get(config.api_path + "/member/info", config.headers())
-        .then((res) => {
-          if (res.data.message === "success") {
-            setMemberName(res.data.result.name);
-            setpackageName(res.data.result.package.name);
-          }
-        })
-        .catch((err) => {
-          throw err.response.data;
-        });
+      const res = await axios.get(config.api_path + "/member/info", config.headers());
+      if (res.data.message === "success") {
+        setMemberName(res.data.result.name);
+        setPackageName(res.data.result.package.name);
+      }
     } catch (e) {
       swal.fire({
-        title: "error",
+        title: "Error",
         text: e.message,
         icon: "error",
       });
     }
   };
+
   return (
     <>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -42,9 +39,7 @@ export default function Sidebar() {
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           />
-          <span className="brand-text font-weight-light">
-            POS ขายเห้ไรดีหว่ะ
-          </span>
+          <span className="brand-text font-weight-light">POS ขายเห้ไรดีหว่ะ</span>
         </Link>
         {/* Sidebar */}
         <div className="sidebar">
@@ -86,8 +81,6 @@ export default function Sidebar() {
               role="menu"
               data-accordion="false"
             >
-              {/* Add icons to the links using the .nav-icon class
-         with font-awesome or any other icon font library */}
               <li className="nav-item">
                 <Link to="/home" className="nav-link">
                   <i className="nav-icon fas fa-th" />
@@ -102,32 +95,38 @@ export default function Sidebar() {
               </li>
               <li className="nav-item">
                 <Link to="/user" className="nav-link">
-                  <i class="nav-icon fa-solid fa-user " />
+                  <i className="nav-icon fas fa-user" />
                   <p>ผู้ใช้งาน</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/sale" className="nav-link">
-                  <i class="nav-icon fa-solid fa-dollar-sign"></i>
+                  <i className="nav-icon fas fa-dollar-sign"></i>
                   <p>ขายสินค้า</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/sumSalePerday" className="nav-link">
-                  <i className="nav-icon fa-solid fa-chart-line"></i>
+                  <i className="nav-icon fas fa-chart-line"></i>
                   <p>สรุปรายงานยอดขาย</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/billSale" className="nav-link">
-                  <i className="nav-icon fa-solid fa-file-invoice-dollar"></i>
+                  <i className="nav-icon fas fa-file-invoice-dollar"></i>
                   <p>รายงานบิลขาย</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/stock" className="nav-link">
-                  <i className="nav-icon fa-solid fa-boxes-stacked"></i>
+                  <i className="nav-icon fas fa-boxes" />
                   <p>รับสินค้าเข้า Stock</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/stockReport" className="nav-link">
+                  <i className="nav-icon fas fa-box" />
+                  <p>รายงาน Stock</p>
                 </Link>
               </li>
             </ul>

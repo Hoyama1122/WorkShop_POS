@@ -12,6 +12,8 @@ import BillSale from "./page/BillSale";  // Ensure this path is correct
 import BillPerDay from "./page/BillPerDay";  // Ensure this path is correct
 import Stock from "./page/Stock";
 
+import ReportStock from "./page/ReportStock";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
   {
     path:"/stock",
     element:<Stock />
+  },
+  {
+    path:"/stockReport",
+    element:<ReportStock />
   }
  
 ]);
