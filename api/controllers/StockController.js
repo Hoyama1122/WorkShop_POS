@@ -3,6 +3,7 @@ const app = express();
 const service = require("./Service");
 
 const StockModel = require("../models/StockModel");
+const { where } = require("sequelize");
 
 app.post("/stock/save", service.isLogin, async (req, res) => {
   try {
@@ -65,46 +66,46 @@ app.get("/stock/report", service.isLogin, async (req, res) => {
 
     const userId = service.getMemberId(req);
 
-    ProductModel.hasMany(StockModel, { foreignKey: "productId" });
-    ProductModel.hasMany(BillSaleDetailModel, { foreignKey: "productId" });
+    ProductModel.hasMany(StockModel);
+    ProductModel.hasMany(BillSaleDetailModel);
 
     let arr = [];
-    const result = await ProductModel.findAll({
+    const results = await ProductModel.findAll({
       include: [
         {
           model: StockModel,
-          where: { userId: userId },
-          required: false,
         },
         {
           model: BillSaleDetailModel,
-          where: { userId: userId },
-          required: false,
         },
       ],
+      where: {
+        userId: userId,
+      },
     });
 
-    result.forEach((product) => {
-      const stocks = product.StockModels || [];
-      const billSaleDetails = product.BillSaleDetailModels || [];
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const stocks = result.stocks || [];
+      const billsaledetails = result.billsaledetails || [];
 
       let stockIn = 0;
       let stockOut = 0;
 
-      stocks.forEach((stock) => {
-        stockIn += parseInt(stock.qty);
-      });
-
-      billSaleDetails.forEach((billSaleDetail) => {
-        stockOut += parseInt(billSaleDetail.qty);
-      });
-
+      for (let j = 0; j < stocks.length; j++) {
+        const item = stocks[j];
+        stockIn += parseInt(item.qty);
+      }
+      for (let j = 0; j < billsaledetails.length; j++) {
+        const item = billsaledetails[j];
+        stockOut += parseInt(item.qty);
+      }
       arr.push({
-        product: product,
+        product: result,
         stockIn: stockIn,
         stockOut: stockOut,
       });
-    });
+    }
 
     res.send({ message: "success", result: arr });
   } catch (e) {
