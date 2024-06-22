@@ -1,0 +1,14 @@
+/* styles.css */
+.icon-link-hover {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.icon-link-hover:hover {
+  transform: translateY(-4px); /* Adjust the value as needed */
+}
+.btn-hover:hover {
+  background-color: #0056b3; /* Change to your desired hover color */
+  color: white;
+  transform: scale(1.02)
+}
