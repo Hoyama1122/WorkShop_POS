@@ -146,16 +146,37 @@ export default function Sidebar() {
 
   const handleComfirmPackages = async () => {
     try {
-      swal.fire({
-        title: "Confirm",
-        text: "คุณต้องการเลือกบิลนี้หรือไม่",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "ใช่",
-        cancelButtonText: "ไม่ใช่",
-      });
+      swal
+        .fire({
+          title: "Confirm",
+          text: "คุณต้องการเลือกบิลนี้หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "ใช่",
+          cancelButtonText: "ไม่ใช่",
+        })
+        .then(async (res) => {
+          if (res.isConfirmed) {
+            const response = await axios.get(
+              `${config.api_path}/package/changePackages/${ChoosePackages.id}`,
+              config.headers()
+            );
+            if (response.data.message === "success") {
+              swal.fire({
+                title: "เปลี่ยนแพ็คเกจสำเร็จ",
+                text: "เปลี่ยนแพ็คเกจสำเร็จ",
+                icon: "success",
+                timer: 2000,
+              });
+              fetchData();
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            }
+          }
+        });
     } catch (e) {
       ShowError(e.message);
     }

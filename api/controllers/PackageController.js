@@ -10,8 +10,7 @@ app.get("/package/list", async (req, res) => {
     const results = await PackageModel.findAll({
       order: ["price"],
     });
-
-    res.send({ results: results });
+    res.send({ results });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -20,7 +19,7 @@ app.get("/package/list", async (req, res) => {
 app.post("/package/memberRegister", async (req, res) => {
   try {
     const result = await MemberModel.create(req.body);
-    res.send({ message: "success", result: result });
+    res.send({ message: "success", result });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -29,10 +28,9 @@ app.post("/package/memberRegister", async (req, res) => {
 app.get("/package/countBill", service.isLogin, async (req, res) => {
   try {
     const BillSaleModel = require("../models/BillsaleModel");
-    
     const { Sequelize } = require("sequelize");
     const Op = Sequelize.Op;
-  
+
     const Mydate = new Date();
     const m = Mydate.getMonth() + 1;
 
@@ -40,7 +38,7 @@ app.get("/package/countBill", service.isLogin, async (req, res) => {
 
     const result = await BillSaleModel.findAll({
       where: {
-        userId: userId,
+        userId,
         [Op.and]: [
           Sequelize.where(
             Sequelize.fn(
@@ -53,6 +51,20 @@ app.get("/package/countBill", service.isLogin, async (req, res) => {
       },
     });
     res.send({ totalBill: result.length });
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+app.get("/package/changePackages/:id", service.isLogin, async (req, res) => {
+  try {
+    const ChangePackagesModel = require("../models/ChangePackagesModel");
+    const payload = {
+      userId: service.getMemberId(req),
+      packageId: req.params.id,
+    };
+    await ChangePackagesModel.create(payload);
+    res.send({ message: "success" });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
