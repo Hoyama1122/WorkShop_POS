@@ -22,6 +22,7 @@ app.use(require("./controllers/ProductImageController"));
 app.use(require("./controllers/UserController"));
 app.use(require("./controllers/BillSaleController"));
 app.use(require("./controllers/StockController"));
+app.use(require("./controllers/BankController"));
 app.listen(port, () => {
   console.log(`Example app listening on port `, port);
 });

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PackageModel = require("../models/PackageModel");
 const MemberModel = require("../models/MemberModel");
+const BankModel = require("../models/BankModel");
 const service = require("./Service");
 
 app.get("/package/list", async (req, res) => {
@@ -28,10 +29,27 @@ app.post("/package/memberRegister", async (req, res) => {
 app.get("/package/countBill", service.isLogin, async (req, res) => {
   try {
     const BillSaleModel = require("../models/BillsaleModel");
+    
+    const { Sequelize } = require("sequelize");
+    const Op = Sequelize.Op;
+  
+    const Mydate = new Date();
+    const m = Mydate.getMonth() + 1;
+
     const userId = service.getMemberId(req);
+
     const result = await BillSaleModel.findAll({
       where: {
         userId: userId,
+        [Op.and]: [
+          Sequelize.where(
+            Sequelize.fn(
+              "EXTRACT",
+              Sequelize.literal('MONTH FROM "createdAt"')
+            ),
+            m
+          ),
+        ],
       },
     });
     res.send({ totalBill: result.length });
