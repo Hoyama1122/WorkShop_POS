@@ -1,3 +1,3 @@
 ﻿# WorkShop_POS
 React + Node PGSQL NAJA
-#Not finished yet
+#Not finished yet 80%
