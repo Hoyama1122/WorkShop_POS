@@ -165,8 +165,8 @@ export default function Sidebar() {
             );
             if (response.data.message === "success") {
               swal.fire({
-                title: "เปลี่ยนแพ็คเกจสำเร็จ",
-                text: "เปลี่ยนแพ็คเกจสำเร็จ",
+                title: "ส่งข้อมูลการเปลี่ยนแพ็คเกจ",
+                text: "ส่งข้อมูลการเปลี่ยนแพ็คเกจสำเร็จ",
                 icon: "success",
                 timer: 2000,
               });

@@ -25,4 +25,10 @@ module.exports = {
     const payload = jwt.decode(token);
     return payload.id;
   },
+  getadminId: (req) => {
+    const jwt = require("jsonwebtoken");
+    const token = req.headers.authorization.split(" ")[1]
+    const payload = jwt.decode(token);
+    return payload.id;
+  },
 };
