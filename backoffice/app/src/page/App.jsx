@@ -165,7 +165,6 @@ export default function App() {
         `}
       </style>
       <div className="login-box text-center">
-    
         <div className="login-header">
           <header>Sign In to BackOffice</header>
         </div>

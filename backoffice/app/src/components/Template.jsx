@@ -68,7 +68,7 @@ export default function Template(props) {
             id="header-toggle"
           />
         </div>
-        
+
       </header>
       <div
         className={`l-navbar ${isNavOpen ? "show" : ""}`}
@@ -92,15 +92,15 @@ export default function Template(props) {
               <NavLink
                 exact
                 to="/main"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
-                <i className="fas fa-home-alt" />
-                <span className="nav_name">หน้าหลัก</span>
+                <i className="fas fa-home-alt " />
+                <span className="nav_name ">หน้าหลัก</span>
               </NavLink>
               <NavLink
                 to="/report-member"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-file-alt" />
@@ -108,7 +108,7 @@ export default function Template(props) {
               </NavLink>
               <NavLink
                 to="/messages"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-exchange-alt" />
@@ -116,7 +116,7 @@ export default function Template(props) {
               </NavLink>
               <NavLink
                 to="/bookmark"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-chart-line" />
@@ -124,7 +124,7 @@ export default function Template(props) {
               </NavLink>
               <NavLink
                 to="/files"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-calendar-day" />
@@ -132,7 +132,7 @@ export default function Template(props) {
               </NavLink>
               <NavLink
                 to="/stats"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-chart-line" />
@@ -140,7 +140,7 @@ export default function Template(props) {
               </NavLink>
               <NavLink
                 to="/stats"
-                className="nav_link"
+                className="nav_link my-menu"
                 activeClassName="active"
               >
                 <i className="fas fa-users" />

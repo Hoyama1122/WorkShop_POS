@@ -35,7 +35,7 @@ app.get("/package/countBill", service.isLogin, async (req, res) => {
     const m = Mydate.getMonth() + 1;
 
     const userId = service.getMemberId(req);
-
+    
     const result = await BillSaleModel.findAll({
       where: {
         userId,
@@ -52,9 +52,11 @@ app.get("/package/countBill", service.isLogin, async (req, res) => {
     });
     res.send({ totalBill: result.length });
   } catch (e) {
+    console.error(e); // Debugging log
     res.status(500).send({ message: e.message });
   }
 });
+
 
 app.get("/package/changePackages/:id", service.isLogin, async (req, res) => {
   try {

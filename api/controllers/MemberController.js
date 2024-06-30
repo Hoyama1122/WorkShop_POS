@@ -35,7 +35,7 @@ app.get("/member/info", service.isLogin, async (req, res) => {
       include: [
         {
           model: PackageModel,
-          attributes: ["name","bill_amount"],
+          attributes: ["name", "bill_amount"],
         },
       ],
     });
@@ -62,4 +62,24 @@ app.put("/member/changeProfile", service.isLogin, async (req, res) => {
     return res.status(401).send({ msg: e.message });
   }
 });
+
+app.get('/member/list', service.isLogin, async (req, res) => {
+  try {
+    const PackageModel = require('../models/PackageModel')
+    MemberModel.belongsTo(PackageModel)
+
+    const result = await MemberModel.findAll({
+      order: [['id', 'desc']],
+      attributes: ["id", 'name', 'phone', 'createdAt'],
+      include: {
+        model: PackageModel
+      }
+    })
+    res.send({ message: "success", result: result })
+  } catch (e) {
+    return res.status(401).send({ msg: e.message });
+  }
+}
+)
+
 module.exports = app;

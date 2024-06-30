@@ -67,7 +67,7 @@ a {
 .l-navbar {
   position: fixed;
   top: 0;
-  left: 0; /* Ensure the sidebar is fixed at the left */
+  left: 0;
   width: var(--nav-width);
   height: 100vh;
   background-color: var(--first-color);
@@ -137,29 +137,29 @@ a {
     margin: calc(var(--header-height) + 1rem) 0 0 0;
     padding-left: calc(var(--nav-width) + 2rem);
   }
-  
+
   .header {
     height: calc(var(--header-height) + 1rem);
     padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
   }
-  
+
   .header_img {
     width: 40px;
     height: 40px;
   }
-  
+
   .header_img img {
     width: 45px;
   }
-  
+
   .l-navbar {
     padding: 1rem 1rem 0 0;
   }
-  
+
   .show {
     width: calc(var(--nav-width) + 156px);
   }
-  
+
   .body-pd {
     padding-left: calc(var(--nav-width) + 188px);
   }
