@@ -54,22 +54,9 @@ export default function Template(props) {
     });
   };
 
-  const toggleNavbar = () => {
-    setIsNavOpen(!isNavOpen);
-  };
 
   return (
     <div>
-      <header className="header" id="header">
-        <div className="header_toggle">
-          <i
-            className={`bx ${isNavOpen ? "bx-menu" : "bx-x"}`}
-            onClick={toggleNavbar}
-            id="header-toggle"
-          />
-        </div>
-
-      </header>
       <div
         className={`l-navbar ${isNavOpen ? "show" : ""}`}
         id="nav-bar"

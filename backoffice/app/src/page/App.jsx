@@ -12,25 +12,26 @@ export default function App() {
   const handleSignIn = async (e) => {
     e.preventDefault();
     const payload = {
-        usr: usr,
-        psd: psd,
+      usr: usr,
+      psd: psd,
     };
     try {
-        const res = await axios.post(`${config.api_path}/admin/signin`, payload);
-        if (res.data.message === "success") {
-            localStorage.setItem(config.token_name, res.data.token); 
-            navigate("/main");
-        } else {
-            swal.fire("Error", res.data.message, "error");
-        }
+      const res = await axios.post(`${config.api_path}/admin/signin`, payload);
+      if (res.data.message === "success") {
+        swal.fire("Sign in ", "ล็อคอินสําเร็จ", "success", 2000);
+        localStorage.setItem(config.token_name, res.data.token);
+        navigate("/main");
+      } else {
+        swal.fire("Error", res.data.message, "error");
+      }
     } catch (err) {
-        swal.fire(
-            "Error",
-            err.response.data.msg || "โปรดตรวจสอบรหัสผ่าน",
-            "error"
-        );
+      swal.fire(
+        "Error",
+        err.response.data.msg || "โปรดตรวจสอบรหัสผ่าน",
+        "error"
+      );
     }
-};
+  };
 
   return (
     <>

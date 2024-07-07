@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useImperativeHandle, forwardRef, useCallback } from "react";
 import swal from "sweetalert2";
 import axios from "axios";
 import config from "../config";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Modal from "../components/Modal";
 import "../css/hover.css"; // Import the CSS file
 
-export default function Sidebar() {
+const Sidebar = forwardRef((props, sidebarRef) => {
   const [memberName, setMemberName] = useState();
   const [packageName, setPackageName] = useState();
   const [Packages, setPackages] = useState([]);
@@ -21,13 +21,10 @@ export default function Sidebar() {
     fetchDataTotalBill();
   }, []);
 
-  const fetchDataBank = async () => {
-    if (Bank.length == 0) {
+  const fetchDataBank = useCallback(async () => {
+    if (Bank.length === 0) {
       try {
-        const res = await axios.get(
-          config.api_path + "/bank/list",
-          config.headers()
-        );
+        const res = await axios.get(`${config.api_path}/bank/list`, config.headers());
         if (res.data.results && res.data.results.length > 0) {
           setBank(res.data.results);
         }
@@ -35,24 +32,14 @@ export default function Sidebar() {
         ShowError(e.message);
       }
     }
-  };
+  }, [Bank.length]);
 
   const fetchDataTotalBill = async () => {
     try {
-      const res = await axios.get(
-        `${config.api_path}/package/countBill`,
-        config.headers()
-      );
+      const res = await axios.get(`${config.api_path}/package/countBill`, config.headers());
       if (res.data.totalBill !== undefined) {
         setTotalBill(res.data.totalBill);
       }
-      // if (res.data.totalBill ===) {
-      //   swal.fire({
-      //     title: "เตือน!",
-      //     text: "บิลเดือนนี้ของคุณเต็มแล้ว โปรดเลือกบิลเดือนต่อไป",
-      //     icon: "warning"
-      //   })
-      // }
     } catch (e) {
       ShowError(e.message);
     }
@@ -60,31 +47,20 @@ export default function Sidebar() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(
-        config.api_path + "/member/info",
-        config.headers()
-      );
+      const res = await axios.get(`${config.api_path}/member/info`, config.headers());
       if (res.data.message === "success") {
         setMemberName(res.data.result.name);
         setPackageName(res.data.result.package.name);
         setBillAmount(res.data.result.package.bill_amount);
       }
     } catch (e) {
-      swal.fire({
-        title: "Error",
-        text: e.message,
-        icon: "error",
-      });
+      ShowError(e.message);
     }
   };
 
   const fetchPackages = async () => {
     try {
-      const res = await axios.get(
-        config.api_path + "/package/list",
-        config.headers()
-      );
-
+      const res = await axios.get(`${config.api_path}/package/list`, config.headers());
       if (res.data.results && res.data.results.length > 0) {
         setPackages(res.data.results);
       }
@@ -122,9 +98,7 @@ export default function Sidebar() {
           className="btn btn-primary btn-hover"
           data-bs-toggle="modal"
           data-bs-target="#modalBank"
-          onClick={() => {
-            handleChoosePackages(item);
-          }}
+          onClick={() => handleChoosePackages(item)}
         >
           <i className="fa fa-check me-2"></i>
           เลือก
@@ -139,48 +113,53 @@ export default function Sidebar() {
     return `${Math.min(percentage, 100)}%`;
   };
 
-  const handleChoosePackages = (item) => {
+  const handleChoosePackages = useCallback((item) => {
     setChoosePackages(item);
     fetchDataBank();
-  };
+  }, [fetchDataBank]);
 
   const handleComfirmPackages = async () => {
     try {
-      swal
-        .fire({
-          title: "Confirm",
-          text: "คุณต้องการเลือกบิลนี้หรือไม่",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
-        })
-        .then(async (res) => {
-          if (res.isConfirmed) {
-            const response = await axios.get(
-              `${config.api_path}/package/changePackages/${ChoosePackages.id}`,
-              config.headers()
-            );
-            if (response.data.message === "success") {
-              swal.fire({
-                title: "ส่งข้อมูลการเปลี่ยนแพ็คเกจ",
-                text: "ส่งข้อมูลการเปลี่ยนแพ็คเกจสำเร็จ",
-                icon: "success",
-                timer: 2000,
-              });
-              fetchData();
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
-            }
-          }
-        });
+      const result = await swal.fire({
+        title: "Confirm",
+        text: "คุณต้องการเลือกบิลนี้หรือไม่",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ใช่",
+        cancelButtonText: "ไม่ใช่",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.get(
+          `${config.api_path}/package/changePackages/${ChoosePackages.id}`,
+          config.headers()
+        );
+        if (response.data.message === "success") {
+          swal.fire({
+            title: "ส่งข้อมูลการเปลี่ยนแพ็คเกจ",
+            text: "ส่งข้อมูลการเปลี่ยนแพ็คเกจสำเร็จ",
+            icon: "success",
+            timer: 2000,
+          });
+          fetchData();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      }
     } catch (e) {
       ShowError(e.message);
     }
   };
+
+  useImperativeHandle(sidebarRef, () => ({
+    refreshCountBill() {
+      fetchDataTotalBill();
+    },
+  }));
+
   return (
     <>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -192,9 +171,7 @@ export default function Sidebar() {
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           />
-          <span className="brand-text font-weight-light">
-            POS ขายเห้ไรดีหว่ะ
-          </span>
+          <span className="brand-text font-weight-light">POS ขายเห้ไรดีหว่ะ</span>
         </Link>
         {/* Sidebar */}
         <div className="sidebar">
@@ -203,7 +180,7 @@ export default function Sidebar() {
             <div className="image">
               <img
                 src="dist/img/user2-160x160.jpg"
-                className="img-circle elevation- 2"
+                className="img-circle elevation-2"
                 alt="User Image"
               />
             </div>
@@ -227,9 +204,7 @@ export default function Sidebar() {
           <span className="text-light text-center">
             {TotalBill} / {BillAmount}
           </span>
-          <span className="float-end text-light">
-            {calculateProgressBarWidth()}
-          </span>
+          <span className="float-end text-light">{calculateProgressBarWidth()}</span>
           <div className="progress mt-2 mb-2 h-40">
             <div
               className="progress-bar"
@@ -243,12 +218,7 @@ export default function Sidebar() {
           </div>
           {/* Sidebar Menu */}
           <nav className="mt-2">
-            <ul
-              className="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
+            <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
               <li className="nav-item">
                 <Link to="/home" className="nav-link">
                   <i className="nav-icon fas fa-th" />
@@ -304,28 +274,20 @@ export default function Sidebar() {
         {/* /.sidebar */}
       </aside>
 
-      <Modal
-        id="modalUpgrade"
-        title="เลือกแพ็คเกรดที่ต้องการ"
-        modalSize="modal-lg"
-      >
+      <Modal id="modalUpgrade" title="เลือกแพ็คเกรดที่ต้องการ" modalSize="modal-lg">
         <div className="row">
           {Packages.length > 0
             ? Packages.map((item) => (
                 <div className="col-4" key={item.id}>
                   <div className="card">
                     <div className="card-body">
-                      <div className="h4 text-center text-success">
-                        {item.name}
-                      </div>
+                      <div className="h4 text-center text-success">{item.name}</div>
                       <div className="h5 text-center text-primary">
-                        {item.price}&nbsp;฿&nbsp;/&nbsp;เดือน{" "}
+                        {item.price}&nbsp;฿&nbsp;/&nbsp;เดือน
                       </div>
                       <div className="h5 text-center">
                         จำนวนบิล&nbsp;
-                        <span className="text-danger">
-                          {parseInt(item.bill_amount).toLocaleString("th-TH")}
-                        </span>
+                        <span className="text-danger">{parseInt(item.bill_amount).toLocaleString("th-TH")}</span>
                         &nbsp;ต่อเดือน
                       </div>
                       <div className="text-center">{renderButton(item)}</div>
@@ -339,28 +301,21 @@ export default function Sidebar() {
 
       <Modal id="modalBank" title="ชำระเงิน" modalSize="modal-lg">
         <div className="h5">
-          Packages ที่เลือกคือ{" "}
-          <span className="text-primary h4">{ChoosePackages.name}</span>
+          Packages ที่เลือกคือ <span className="text-primary h4">{ChoosePackages.name}</span>
         </div>
         <div className="h5">
-          จำนวนบิล{" "}
-          <span className="text-warning h4">
-            {parseInt(ChoosePackages.bill_amount).toLocaleString("th-TH")}
-          </span>
+          จำนวนบิล <span className="text-warning h4">{parseInt(ChoosePackages.bill_amount).toLocaleString("th-TH")}</span>
           &nbsp;ต่อเดือน
         </div>
         <div className="h5">
-          ราคา{" "}
-          <span className="text-primary h4">
-            {parseInt(ChoosePackages.price).toLocaleString("th-TH")}
-          </span>
+          ราคา <span className="text-primary h4">{parseInt(ChoosePackages.price).toLocaleString("th-TH")}</span>
           &nbsp;฿
         </div>
         <table className="table table-bordered table-striped table-hover mt-3">
           <thead className="table-white text-center">
             <tr>
               <th>ธนาคาร</th>
-              <th>เลชบัญชี</th>
+              <th>เลขบัญชี</th>
               <th>ชื่อบัญชี</th>
               <th>สาขา</th>
             </tr>
@@ -379,8 +334,7 @@ export default function Sidebar() {
           </tbody>
         </table>
         <div className="alert mt-3 alert-warning text-center fw-bold">
-          <i className="fa fa-info me-2"></i>
-          เมื่อโอนเงินแล้ว แจ้งที่ IG: whisky.fk
+          <i className="fa fa-info me-2"></i> เมื่อโอนเงินแล้ว แจ้งที่ IG: whisky.fk
         </div>
         <div className="mt-3 text-center">
           <div onClick={handleComfirmPackages} className="btn btn-primary">
@@ -390,4 +344,6 @@ export default function Sidebar() {
       </Modal>
     </>
   );
-}
+});
+
+export default Sidebar;

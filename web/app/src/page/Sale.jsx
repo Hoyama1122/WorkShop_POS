@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState , useRef} from "react";
 import Template from "../components/Template";
 import swal from "sweetalert2";
 import axios from "axios";
@@ -17,6 +17,8 @@ export default function Sale() {
   const [lastBill, setLastBill] = useState({});
   const [billToday, setBillToday] = useState([]);
   const [selectBill, setselectBill] = useState({});
+
+  const saleRef = useRef()
 
   useEffect(() => {
     fetchData();
@@ -184,6 +186,10 @@ export default function Sale() {
               setTotalPrice(0);
               let btns = document.getElementsByClassName("btnClose");
               for (let i = 0; i < btns.length; i++) btns[i].click();
+
+              if(saleRef.current){
+                saleRef.current.refreshCountBill();
+              }
             }
           } catch (e) {
             showErrorAlert(e.message);
@@ -252,7 +258,7 @@ export default function Sale() {
 
   return (
     <>
-      <Template>
+      <Template ref={saleRef}>
         <div className="card mt-4">
           <div className="card-header d-flex justify-content-between align-items-center bg-success text-white">
             <div className="h5 mb-0">ขายสินค้า</div>
